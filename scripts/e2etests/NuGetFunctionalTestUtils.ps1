@@ -171,14 +171,20 @@ function RealTimeLogResults
     {
         $logLastLine = (Get-Content $log)[-1] -split " "
         $currentTestName = $logLastLine[1].Replace("...", "") 
-        $resultRow = "Failed $currentTestName 600 Test timed out"
+        $resultRow = "Failed $currentTestName 600000 Test timed out"
         $resultRow >> $RealTimeResultsFile
         $errorMessage = 'Run Failed - Results.html did not get created. ' `
         + 'This indicates that the tests did not finish running. It could be that the VS crashed or a test timed out. Please investigate.'
         CopyResultsToCI $NuGetDropPath $RunCounter $testResults
         if($env:CI)
         {
-            Get-ScreenCapture -OfWindow -OutputPath $env:EndToEndResultsDropPath
+            try{
+                Get-ScreenCapture -OfWindow -OutputPath $env:EndToEndResultsDropPath
+            }
+            catch{
+
+            }
+            
         }
         
         Write-Error $errorMessage
